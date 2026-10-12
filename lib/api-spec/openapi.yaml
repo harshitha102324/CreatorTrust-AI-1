@@ -3,20 +3,41 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: CreatorTrust AI business workflow API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Browser authentication
+  - name: products
+    description: Product catalog
+  - name: promoters
+    description: Promoter discovery and reviews
+  - name: campaigns
+    description: Campaign agreements and promotion workflow
+  - name: analytics
+    description: Promotion, demand, location, sales, and profit analytics
+  - name: orders
+    description: Orders, attribution, and delivery
+  - name: reviews
+    description: Customer feedback
+  - name: expenses
+    description: Campaign and business costs
+  - name: notifications
+    description: Record-based business alerts
+  - name: insights
+    description: AI-assisted analysis based on saved records
+  - name: storage
+    description: Protected agreement document storage
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +45,1397 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /auth/user:
+    get:
+      operationId: getCurrentAuthUser
+      tags: [auth]
+      summary: Get the current authenticated user
+      responses:
+        "200":
+          description: Current auth state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUserEnvelope"
+  /login:
+    get:
+      operationId: beginBrowserLogin
+      tags: [auth]
+      summary: Start browser sign-in
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "302":
+          description: Redirect to identity provider
+  /callback:
+    get:
+      operationId: handleBrowserLoginCallback
+      tags: [auth]
+      summary: Complete browser sign-in
+      parameters:
+        - name: code
+          in: query
+          required: false
+          schema: { type: string }
+        - name: state
+          in: query
+          required: false
+          schema: { type: string }
+        - name: iss
+          in: query
+          required: false
+          schema: { type: string, format: uri }
+      responses:
+        "302":
+          description: Redirect to the application
+  /logout:
+    get:
+      operationId: logoutBrowserSession
+      tags: [auth]
+      summary: End browser session
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema: { type: string, default: / }
+      responses:
+        "302":
+          description: Redirect to the application
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List products
+      responses:
+        "200":
+          description: Product records
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Product" }
+    post:
+      operationId: createProduct
+      tags: [products]
+      summary: Register a product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProductInput" }
+      responses:
+        "201":
+          description: Product created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Product" }
+  /products/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      operationId: updateProduct
+      tags: [products]
+      summary: Update a product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProductUpdate" }
+      responses:
+        "200":
+          description: Updated product
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Product" }
+        "404": { description: Product not found }
+    delete:
+      operationId: deleteProduct
+      tags: [products]
+      summary: Delete a product
+      responses:
+        "204": { description: Product deleted }
+        "404": { description: Product not found }
+  /promoters:
+    get:
+      operationId: listPromoters
+      tags: [promoters]
+      summary: List managed promoters
+      responses:
+        "200":
+          description: Promoter records
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Promoter" }
+    post:
+      operationId: createPromoter
+      tags: [promoters]
+      summary: Add a promoter record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PromoterInput" }
+      responses:
+        "201":
+          description: Promoter created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Promoter" }
+  /promoters/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      operationId: updatePromoter
+      tags: [promoters]
+      summary: Update a promoter record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PromoterUpdate" }
+      responses:
+        "200":
+          description: Updated promoter
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Promoter" }
+        "404": { description: Promoter not found }
+    delete:
+      operationId: deletePromoter
+      tags: [promoters]
+      summary: Delete a promoter
+      responses:
+        "204": { description: Promoter deleted }
+        "404": { description: Promoter not found }
+  /discovery:
+    get:
+      operationId: findPromoterMatches
+      tags: [promoters]
+      summary: Rank promoters against product and campaign goals
+      parameters:
+        - name: productId
+          in: query
+          required: true
+          schema: { type: integer }
+        - name: budget
+          in: query
+          required: false
+          schema: { type: number }
+        - name: location
+          in: query
+          required: false
+          schema: { type: string }
+        - name: platform
+          in: query
+          required: false
+          schema: { type: string }
+        - name: category
+          in: query
+          required: false
+          schema: { type: string }
+        - name: minEngagement
+          in: query
+          required: false
+          schema: { type: number }
+        - name: minRating
+          in: query
+          required: false
+          schema: { type: number }
+      responses:
+        "200":
+          description: Ranked promoter candidates with transparent match reasons
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/PromoterMatch" }
+  /promoter-reviews:
+    get:
+      operationId: listPromoterReviews
+      tags: [promoters]
+      summary: List promoter reviews
+      parameters:
+        - name: promoterId
+          in: query
+          required: false
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Promoter reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/PromoterReview" }
+    post:
+      operationId: createPromoterReview
+      tags: [promoters]
+      summary: Add a promoter review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PromoterReviewInput" }
+      responses:
+        "201":
+          description: Review created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PromoterReview" }
+  /campaigns:
+    get:
+      operationId: listCampaigns
+      tags: [campaigns]
+      summary: List campaigns
+      responses:
+        "200":
+          description: Campaign records
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Campaign" }
+    post:
+      operationId: createCampaign
+      tags: [campaigns]
+      summary: Create a campaign agreement draft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CampaignInput" }
+      responses:
+        "201":
+          description: Campaign draft created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Campaign" }
+  /campaigns/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      operationId: updateCampaign
+      tags: [campaigns]
+      summary: Update campaign details and workflow state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CampaignUpdate" }
+      responses:
+        "200":
+          description: Updated campaign
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Campaign" }
+        "404": { description: Campaign not found }
+    delete:
+      operationId: deleteCampaign
+      tags: [campaigns]
+      summary: Delete a campaign
+      responses:
+        "204": { description: Campaign deleted }
+        "404": { description: Campaign not found }
+  /campaigns/{id}/confirm:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    post:
+      operationId: confirmCampaignAgreement
+      tags: [campaigns]
+      summary: Record owner confirmation of an agreement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AgreementConfirmationInput" }
+      responses:
+        "200":
+          description: Agreement explicitly confirmed by owner
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Campaign" }
+  /campaigns/{id}/timeline:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      operationId: listCampaignTimeline
+      tags: [campaigns]
+      summary: Get a campaign's promotion timeline
+      responses:
+        "200":
+          description: Timeline entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/TimelineEntry" }
+    post:
+      operationId: createCampaignTimelineEntry
+      tags: [campaigns]
+      summary: Record a workflow stage or event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimelineEntryInput" }
+      responses:
+        "201":
+          description: Timeline event recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TimelineEntry" }
+  /campaign-metrics:
+    get:
+      operationId: listCampaignMetrics
+      tags: [analytics]
+      summary: List recorded promotion performance metrics
+      parameters:
+        - name: campaignId
+          in: query
+          required: false
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Promotion metric records
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/CampaignMetric" }
+    post:
+      operationId: createCampaignMetric
+      tags: [analytics]
+      summary: Record campaign performance from a verified or manual source
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CampaignMetricInput" }
+      responses:
+        "201":
+          description: Metric record created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CampaignMetric" }
+  /tracking-links:
+    get:
+      operationId: listTrackingLinks
+      tags: [campaigns]
+      summary: List campaign and promoter tracking links
+      responses:
+        "200":
+          description: Tracking links
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/TrackingLink" }
+    post:
+      operationId: createTrackingLink
+      tags: [campaigns]
+      summary: Create a campaign-specific tracking link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TrackingLinkInput" }
+      responses:
+        "201":
+          description: Tracking link created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TrackingLink" }
+  /track/{code}:
+    get:
+      operationId: visitTrackingLink
+      tags: [campaigns]
+      summary: Count a tracked link visit and redirect to its product URL
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "302": { description: Redirect to product purchase page }
+        "404": { description: Link not found }
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List orders and delivery status
+      responses:
+        "200":
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Order" }
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Record an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OrderInput" }
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Order" }
+  /orders/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      operationId: updateOrder
+      tags: [orders]
+      summary: Update payment, order attribution, or delivery status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OrderUpdate" }
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Order" }
+        "404": { description: Order not found }
+    delete:
+      operationId: deleteOrder
+      tags: [orders]
+      summary: Delete an order
+      responses:
+        "204": { description: Order deleted }
+        "404": { description: Order not found }
+  /orders/import:
+    post:
+      operationId: importOrders
+      tags: [orders]
+      summary: Import order rows from CSV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OrderImportInput" }
+      responses:
+        "200":
+          description: Import results
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ImportResult" }
+  /customer-reviews:
+    get:
+      operationId: listCustomerReviews
+      tags: [reviews]
+      summary: List post-delivery customer reviews
+      responses:
+        "200":
+          description: Customer reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/CustomerReview" }
+    post:
+      operationId: createCustomerReview
+      tags: [reviews]
+      summary: Record a customer review for a delivered order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CustomerReviewInput" }
+      responses:
+        "201":
+          description: Customer review recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerReview" }
+  /expenses:
+    get:
+      operationId: listExpenses
+      tags: [expenses]
+      summary: List recorded business expenses
+      responses:
+        "200":
+          description: Expense records
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Expense" }
+    post:
+      operationId: createExpense
+      tags: [expenses]
+      summary: Record a business expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ExpenseInput" }
+      responses:
+        "201":
+          description: Expense recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Expense" }
+  /expenses/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      operationId: updateExpense
+      tags: [expenses]
+      summary: Update an expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ExpenseUpdate" }
+      responses:
+        "200":
+          description: Updated expense
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Expense" }
+    delete:
+      operationId: deleteExpense
+      tags: [expenses]
+      summary: Delete an expense
+      responses:
+        "204": { description: Expense deleted }
+  /dashboard:
+    get:
+      operationId: getDashboardSummary
+      tags: [analytics]
+      summary: Get actual business totals and dashboard charts
+      responses:
+        "200":
+          description: Dashboard summary computed from saved records
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DashboardSummary" }
+  /analytics/demand:
+    get:
+      operationId: getDemandAnalytics
+      tags: [analytics]
+      summary: Analyze interest, orders, inventory, returns, and demand by location and variant
+      responses:
+        "200":
+          description: Demand analytics and explicitly labelled estimates
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DemandAnalytics" }
+  /analytics/locations:
+    get:
+      operationId: getLocationAnalytics
+      tags: [analytics]
+      summary: Aggregate orders, units, deliveries, revenue, and interest by location
+      responses:
+        "200":
+          description: Location aggregates
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LocationAnalytics" }
+  /analytics/financials:
+    get:
+      operationId: getFinancialAnalytics
+      tags: [analytics]
+      summary: Calculate revenue, net sales, expenses, profit, margin, and campaign ROI
+      responses:
+        "200":
+          description: Financial results computed from valid records
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FinancialAnalytics" }
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: Generate alerts from actual business records
+      responses:
+        "200":
+          description: Record-based notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Notification" }
+  /insights:
+    post:
+      operationId: askBusinessInsight
+      tags: [insights]
+      summary: Answer business questions from saved records and computed financial totals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/InsightInput" }
+      responses:
+        "200":
+          description: Record-grounded answer or transparent fallback
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InsightResponse" }
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request a private presigned upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UploadUrlRequest" }
+      responses:
+        "200":
+          description: Presigned URL created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UploadUrlResponse" }
+        "400":
+          description: Invalid file metadata
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+  /storage/objects/{objectPath}:
+    get:
+      operationId: getStorageObject
+      tags: [storage]
+      summary: Read a private uploaded object
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Streamed file content
+          content:
+            "*/*":
+              schema: { type: string, format: binary }
+        "404": { description: Object not found }
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
-        status:
-          type: string
-      required:
-        - status
-
+        status: { type: string }
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+    AuthUser:
+      type: object
+      required: [id, email, firstName, lastName, profileImageUrl]
+      properties:
+        id: { type: string }
+        email: { type: [string, "null"], format: email }
+        firstName: { type: [string, "null"] }
+        lastName: { type: [string, "null"] }
+        profileImageUrl: { type: [string, "null"], format: uri }
+    AuthUserEnvelope:
+      type: object
+      required: [user]
+      properties:
+        user:
+          oneOf:
+            - $ref: "#/components/schemas/AuthUser"
+            - type: "null"
+    Product:
+      type: object
+      required: [id, name, category, description, sellingPrice, unitCost, stock, targetQuantity, qualityDetails, colors, sizes, purchaseUrl, targetAudience, targetLocations, promotionBudget, launchDate, isSample, createdAt, updatedAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        imageUrl: { type: [string, "null"] }
+        category: { type: string }
+        description: { type: string }
+        sellingPrice: { type: number }
+        unitCost: { type: number }
+        stock: { type: integer }
+        targetQuantity: { type: integer }
+        qualityDetails: { type: string }
+        colors: { type: array, items: { type: string } }
+        sizes: { type: array, items: { type: string } }
+        purchaseUrl: { type: [string, "null"] }
+        targetAudience: { type: string }
+        targetLocations: { type: array, items: { type: string } }
+        promotionBudget: { type: number }
+        launchDate: { type: [string, "null"], format: date }
+        isSample: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    ProductInput:
+      type: object
+      required: [name, category, description, sellingPrice, unitCost, stock, targetQuantity, qualityDetails, colors, sizes, targetAudience, targetLocations, promotionBudget]
+      properties:
+        name: { type: string, minLength: 1 }
+        imageUrl: { type: [string, "null"] }
+        category: { type: string, minLength: 1 }
+        description: { type: string }
+        sellingPrice: { type: number, minimum: 0 }
+        unitCost: { type: number, minimum: 0 }
+        stock: { type: integer, minimum: 0 }
+        targetQuantity: { type: integer, minimum: 0 }
+        qualityDetails: { type: string }
+        colors: { type: array, items: { type: string } }
+        sizes: { type: array, items: { type: string } }
+        purchaseUrl: { type: [string, "null"] }
+        targetAudience: { type: string }
+        targetLocations: { type: array, items: { type: string } }
+        promotionBudget: { type: number, minimum: 0 }
+        launchDate: { type: [string, "null"], format: date }
+    ProductUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        imageUrl: { type: [string, "null"] }
+        category: { type: string, minLength: 1 }
+        description: { type: string }
+        sellingPrice: { type: number, minimum: 0 }
+        unitCost: { type: number, minimum: 0 }
+        stock: { type: integer, minimum: 0 }
+        targetQuantity: { type: integer, minimum: 0 }
+        qualityDetails: { type: string }
+        colors: { type: array, items: { type: string } }
+        sizes: { type: array, items: { type: string } }
+        purchaseUrl: { type: [string, "null"] }
+        targetAudience: { type: string }
+        targetLocations: { type: array, items: { type: string } }
+        promotionBudget: { type: number, minimum: 0 }
+        launchDate: { type: [string, "null"], format: date }
+    Promoter:
+      type: object
+      required: [id, name, profileUrl, platform, contentCategory, audienceInterests, audienceLocations, followers, engagementRate, averageViews, previousPerformance, rating, costPerVideo, costPerPost, costPerStory, quoteAmount, deliverables, contact, dataSource, verificationStatus, isShortlisted, isSample, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        profileUrl: { type: [string, "null"] }
+        platform: { type: string }
+        contentCategory: { type: string }
+        audienceInterests: { type: array, items: { type: string } }
+        audienceLocations: { type: array, items: { type: string } }
+        followers: { type: integer }
+        engagementRate: { type: [number, "null"] }
+        averageViews: { type: [integer, "null"] }
+        previousPerformance: { type: string }
+        rating: { type: [number, "null"] }
+        costPerVideo: { type: [number, "null"] }
+        costPerPost: { type: [number, "null"] }
+        costPerStory: { type: [number, "null"] }
+        quoteAmount: { type: number }
+        deliverables: { type: array, items: { type: string } }
+        contact: { type: [string, "null"] }
+        dataSource: { type: string }
+        verificationStatus: { type: string, enum: [sample, manual, verified, unverified] }
+        isShortlisted: { type: boolean }
+        isSample: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    PromoterInput:
+      type: object
+      required: [name, platform, contentCategory, audienceInterests, audienceLocations, followers, previousPerformance, quoteAmount, deliverables, dataSource, verificationStatus]
+      properties:
+        name: { type: string, minLength: 1 }
+        profileUrl: { type: [string, "null"] }
+        platform: { type: string, minLength: 1 }
+        contentCategory: { type: string, minLength: 1 }
+        audienceInterests: { type: array, items: { type: string } }
+        audienceLocations: { type: array, items: { type: string } }
+        followers: { type: integer, minimum: 0 }
+        engagementRate: { type: [number, "null"], minimum: 0, maximum: 100 }
+        averageViews: { type: [integer, "null"], minimum: 0 }
+        previousPerformance: { type: string }
+        costPerVideo: { type: [number, "null"], minimum: 0 }
+        costPerPost: { type: [number, "null"], minimum: 0 }
+        costPerStory: { type: [number, "null"], minimum: 0 }
+        quoteAmount: { type: number, minimum: 0 }
+        deliverables: { type: array, items: { type: string } }
+        contact: { type: [string, "null"] }
+        dataSource: { type: string }
+        verificationStatus: { type: string, enum: [sample, manual, verified, unverified] }
+        isShortlisted: { type: boolean, default: false }
+    PromoterUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        profileUrl: { type: [string, "null"] }
+        platform: { type: string, minLength: 1 }
+        contentCategory: { type: string, minLength: 1 }
+        audienceInterests: { type: array, items: { type: string } }
+        audienceLocations: { type: array, items: { type: string } }
+        followers: { type: integer, minimum: 0 }
+        engagementRate: { type: [number, "null"], minimum: 0, maximum: 100 }
+        averageViews: { type: [integer, "null"], minimum: 0 }
+        previousPerformance: { type: string }
+        costPerVideo: { type: [number, "null"], minimum: 0 }
+        costPerPost: { type: [number, "null"], minimum: 0 }
+        costPerStory: { type: [number, "null"], minimum: 0 }
+        quoteAmount: { type: number, minimum: 0 }
+        deliverables: { type: array, items: { type: string } }
+        contact: { type: [string, "null"] }
+        dataSource: { type: string }
+        verificationStatus: { type: string, enum: [sample, manual, verified, unverified] }
+        isShortlisted: { type: boolean }
+    PromoterMatch:
+      type: object
+      required: [promoter, matchScore, reasons, missingInformation, estimatedReach]
+      properties:
+        promoter: { $ref: "#/components/schemas/Promoter" }
+        matchScore: { type: number }
+        reasons: { type: array, items: { type: string } }
+        missingInformation: { type: array, items: { type: string } }
+        estimatedReach: { type: [integer, "null"] }
+    PromoterReview:
+      type: object
+      required: [id, promoterId, rating, positiveFeedback, negativeFeedback, source, isSample, createdAt]
+      properties:
+        id: { type: integer }
+        promoterId: { type: integer }
+        rating: { type: number, minimum: 1, maximum: 5 }
+        positiveFeedback: { type: string }
+        negativeFeedback: { type: string }
+        source: { type: string }
+        isSample: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    PromoterReviewInput:
+      type: object
+      required: [promoterId, rating, positiveFeedback, negativeFeedback, source]
+      properties:
+        promoterId: { type: integer }
+        rating: { type: number, minimum: 1, maximum: 5 }
+        positiveFeedback: { type: string }
+        negativeFeedback: { type: string }
+        source: { type: string }
+    Campaign:
+      type: object
+      required: [id, name, productId, promoterId, status, agreedPrice, videoCount, postCount, requiredContent, productLink, startDate, submissionDeadline, publicationDeadline, paymentStatus, revisionTerms, deliverables, campaignTerms, agreementObjectPath, agreementConfirmed, currentStage, isSample, createdAt, updatedAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        productId: { type: integer }
+        promoterId: { type: integer }
+        status: { type: string, enum: [draft, sent, accepted, active, completed] }
+        agreedPrice: { type: number }
+        videoCount: { type: integer }
+        postCount: { type: integer }
+        requiredContent: { type: string }
+        productLink: { type: [string, "null"] }
+        startDate: { type: [string, "null"], format: date }
+        submissionDeadline: { type: [string, "null"], format: date }
+        publicationDeadline: { type: [string, "null"], format: date }
+        paymentStatus: { type: string, enum: [unpaid, partial, paid] }
+        revisionTerms: { type: string }
+        deliverables: { type: array, items: { type: string } }
+        campaignTerms: { type: string }
+        agreementObjectPath: { type: [string, "null"] }
+        agreementConfirmed: { type: boolean }
+        currentStage: { type: string }
+        isSample: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    CampaignInput:
+      type: object
+      required: [name, productId, promoterId, agreedPrice, videoCount, postCount, requiredContent, revisionTerms, deliverables, campaignTerms]
+      properties:
+        name: { type: string, minLength: 1 }
+        productId: { type: integer }
+        promoterId: { type: integer }
+        agreedPrice: { type: number, minimum: 0 }
+        videoCount: { type: integer, minimum: 0 }
+        postCount: { type: integer, minimum: 0 }
+        requiredContent: { type: string }
+        productLink: { type: [string, "null"] }
+        startDate: { type: [string, "null"], format: date }
+        submissionDeadline: { type: [string, "null"], format: date }
+        publicationDeadline: { type: [string, "null"], format: date }
+        paymentStatus: { type: string, enum: [unpaid, partial, paid], default: unpaid }
+        revisionTerms: { type: string }
+        deliverables: { type: array, items: { type: string } }
+        campaignTerms: { type: string }
+        agreementObjectPath: { type: [string, "null"] }
+    CampaignUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        productId: { type: integer }
+        promoterId: { type: integer }
+        agreedPrice: { type: number, minimum: 0 }
+        videoCount: { type: integer, minimum: 0 }
+        postCount: { type: integer, minimum: 0 }
+        requiredContent: { type: string }
+        productLink: { type: [string, "null"] }
+        startDate: { type: [string, "null"], format: date }
+        submissionDeadline: { type: [string, "null"], format: date }
+        publicationDeadline: { type: [string, "null"], format: date }
+        paymentStatus: { type: string, enum: [unpaid, partial, paid] }
+        revisionTerms: { type: string }
+        deliverables: { type: array, items: { type: string } }
+        campaignTerms: { type: string }
+        agreementObjectPath: { type: [string, "null"] }
+        status: { type: string, enum: [draft, sent, accepted, active, completed] }
+        currentStage: { type: string }
+    AgreementConfirmationInput:
+      type: object
+      required: [agreedPrice, confirmed]
+      properties:
+        agreedPrice: { type: number, minimum: 0 }
+        confirmed: { type: boolean, const: true }
+        note: { type: string }
+    TimelineEntry:
+      type: object
+      required: [id, campaignId, stage, status, occurredAt, note, evidenceUrl, postUrl, revisionReason, approvalDetails, deadline, isSample]
+      properties:
+        id: { type: integer }
+        campaignId: { type: integer }
+        stage: { type: string }
+        status: { type: string, enum: [pending, in_progress, completed, overdue, revision_requested, approved, rejected] }
+        occurredAt: { type: string, format: date-time }
+        note: { type: string }
+        evidenceUrl: { type: [string, "null"] }
+        postUrl: { type: [string, "null"] }
+        revisionReason: { type: [string, "null"] }
+        approvalDetails: { type: [string, "null"] }
+        deadline: { type: [string, "null"], format: date }
+        isSample: { type: boolean }
+    TimelineEntryInput:
+      type: object
+      required: [stage, status, note]
+      properties:
+        stage: { type: string }
+        status: { type: string, enum: [pending, in_progress, completed, overdue, revision_requested, approved, rejected] }
+        occurredAt: { type: [string, "null"], format: date-time }
+        note: { type: string }
+        evidenceUrl: { type: [string, "null"] }
+        postUrl: { type: [string, "null"] }
+        revisionReason: { type: [string, "null"] }
+        approvalDetails: { type: [string, "null"] }
+        deadline: { type: [string, "null"], format: date }
+    CampaignMetric:
+      type: object
+      required: [id, campaignId, metricDate, views, reach, impressions, likes, comments, shares, saves, linkClicks, enquiries, interestedCustomers, addToCart, attributedOrders, audienceLocation, source, verified, updatedAt, isSample]
+      properties:
+        id: { type: integer }
+        campaignId: { type: integer }
+        metricDate: { type: string, format: date }
+        views: { type: integer }
+        reach: { type: integer }
+        impressions: { type: integer }
+        likes: { type: integer }
+        comments: { type: integer }
+        shares: { type: integer }
+        saves: { type: integer }
+        linkClicks: { type: integer }
+        enquiries: { type: integer }
+        interestedCustomers: { type: integer }
+        addToCart: { type: integer }
+        attributedOrders: { type: integer }
+        audienceLocation: { type: [string, "null"] }
+        source: { type: string }
+        verified: { type: boolean }
+        updatedAt: { type: string, format: date-time }
+        isSample: { type: boolean }
+    CampaignMetricInput:
+      type: object
+      required: [campaignId, metricDate, source]
+      properties:
+        campaignId: { type: integer }
+        metricDate: { type: string, format: date }
+        views: { type: integer, minimum: 0, default: 0 }
+        reach: { type: integer, minimum: 0, default: 0 }
+        impressions: { type: integer, minimum: 0, default: 0 }
+        likes: { type: integer, minimum: 0, default: 0 }
+        comments: { type: integer, minimum: 0, default: 0 }
+        shares: { type: integer, minimum: 0, default: 0 }
+        saves: { type: integer, minimum: 0, default: 0 }
+        linkClicks: { type: integer, minimum: 0, default: 0 }
+        enquiries: { type: integer, minimum: 0, default: 0 }
+        interestedCustomers: { type: integer, minimum: 0, default: 0 }
+        addToCart: { type: integer, minimum: 0, default: 0 }
+        attributedOrders: { type: integer, minimum: 0, default: 0 }
+        audienceLocation: { type: [string, "null"] }
+        source: { type: string }
+        verified: { type: boolean, default: false }
+    TrackingLink:
+      type: object
+      required: [id, campaignId, promoterId, code, destinationUrl, clicks, isSample, createdAt]
+      properties:
+        id: { type: integer }
+        campaignId: { type: integer }
+        promoterId: { type: integer }
+        code: { type: string }
+        destinationUrl: { type: string }
+        clicks: { type: integer }
+        isSample: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    TrackingLinkInput:
+      type: object
+      required: [campaignId, promoterId, destinationUrl]
+      properties:
+        campaignId: { type: integer }
+        promoterId: { type: integer }
+        destinationUrl: { type: string, format: uri }
+    Order:
+      type: object
+      required: [id, orderCode, orderDate, productId, variant, quantity, unitPrice, discount, totalAmount, customerRef, city, district, state, pinCode, paymentStatus, campaignId, promoterId, source, status, returnStatus, deliveryStatus, trackingNumber, courier, dispatchDate, deliveryDate, isSample, createdAt]
+      properties:
+        id: { type: integer }
+        orderCode: { type: string }
+        orderDate: { type: string, format: date }
+        productId: { type: integer }
+        variant: { type: string }
+        quantity: { type: integer }
+        unitPrice: { type: number }
+        discount: { type: number }
+        totalAmount: { type: number }
+        customerRef: { type: [string, "null"], description: Privacy-safe customer identifier; do not store name, phone, or full address. }
+        city: { type: [string, "null"] }
+        district: { type: [string, "null"] }
+        state: { type: [string, "null"] }
+        pinCode: { type: [string, "null"] }
+        paymentStatus: { type: string, enum: [pending, paid, refunded, partial] }
+        campaignId: { type: [integer, "null"] }
+        promoterId: { type: [integer, "null"] }
+        source: { type: string }
+        status: { type: string, enum: [placed, confirmed, packed, shipped, out_for_delivery, delivered, cancelled, delivery_failed, returned] }
+        returnStatus: { type: string, enum: [none, requested, returned, refunded] }
+        deliveryStatus: { type: string }
+        trackingNumber: { type: [string, "null"] }
+        courier: { type: [string, "null"] }
+        dispatchDate: { type: [string, "null"], format: date }
+        deliveryDate: { type: [string, "null"], format: date }
+        isSample: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    OrderInput:
+      type: object
+      required: [orderCode, orderDate, productId, variant, quantity, unitPrice, discount, paymentStatus, source, status]
+      properties:
+        orderCode: { type: string, minLength: 1 }
+        orderDate: { type: string, format: date }
+        productId: { type: integer }
+        variant: { type: string }
+        quantity: { type: integer, minimum: 1 }
+        unitPrice: { type: number, minimum: 0 }
+        discount: { type: number, minimum: 0, default: 0 }
+        customerRef: { type: [string, "null"] }
+        city: { type: [string, "null"] }
+        district: { type: [string, "null"] }
+        state: { type: [string, "null"] }
+        pinCode: { type: [string, "null"] }
+        paymentStatus: { type: string, enum: [pending, paid, refunded, partial] }
+        campaignId: { type: [integer, "null"] }
+        promoterId: { type: [integer, "null"] }
+        source: { type: string }
+        status: { type: string, enum: [placed, confirmed, packed, shipped, out_for_delivery, delivered, cancelled, delivery_failed, returned] }
+        returnStatus: { type: string, enum: [none, requested, returned, refunded], default: none }
+        trackingNumber: { type: [string, "null"] }
+        courier: { type: [string, "null"] }
+        dispatchDate: { type: [string, "null"], format: date }
+        deliveryDate: { type: [string, "null"], format: date }
+    OrderUpdate:
+      type: object
+      properties:
+        orderCode: { type: string, minLength: 1 }
+        orderDate: { type: string, format: date }
+        productId: { type: integer }
+        variant: { type: string }
+        quantity: { type: integer, minimum: 1 }
+        unitPrice: { type: number, minimum: 0 }
+        discount: { type: number, minimum: 0 }
+        customerRef: { type: [string, "null"] }
+        city: { type: [string, "null"] }
+        district: { type: [string, "null"] }
+        state: { type: [string, "null"] }
+        pinCode: { type: [string, "null"] }
+        paymentStatus: { type: string, enum: [pending, paid, refunded, partial] }
+        campaignId: { type: [integer, "null"] }
+        promoterId: { type: [integer, "null"] }
+        source: { type: string }
+        status: { type: string, enum: [placed, confirmed, packed, shipped, out_for_delivery, delivered, cancelled, delivery_failed, returned] }
+        returnStatus: { type: string, enum: [none, requested, returned, refunded] }
+        trackingNumber: { type: [string, "null"] }
+        courier: { type: [string, "null"] }
+        dispatchDate: { type: [string, "null"], format: date }
+        deliveryDate: { type: [string, "null"], format: date }
+    OrderImportInput:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          items: { $ref: "#/components/schemas/OrderInput" }
+    ImportResult:
+      type: object
+      required: [imported, failed, errors]
+      properties:
+        imported: { type: integer }
+        failed: { type: integer }
+        errors: { type: array, items: { type: string } }
+    CustomerReview:
+      type: object
+      required: [id, orderId, productId, rating, qualityRating, colorMatches, metExpectations, valueRating, priceSatisfaction, packagingRating, deliveryRating, recommend, buyAgain, comments, reviewDate, variant, location, isSample]
+      properties:
+        id: { type: integer }
+        orderId: { type: integer }
+        productId: { type: integer }
+        rating: { type: number, minimum: 1, maximum: 5 }
+        qualityRating: { type: number, minimum: 1, maximum: 5 }
+        colorMatches: { type: boolean }
+        metExpectations: { type: boolean }
+        valueRating: { type: number, minimum: 1, maximum: 5 }
+        priceSatisfaction: { type: number, minimum: 1, maximum: 5 }
+        packagingRating: { type: number, minimum: 1, maximum: 5 }
+        deliveryRating: { type: number, minimum: 1, maximum: 5 }
+        recommend: { type: boolean }
+        buyAgain: { type: boolean }
+        comments: { type: string }
+        reviewDate: { type: string, format: date }
+        variant: { type: string }
+        location: { type: [string, "null"] }
+        isSample: { type: boolean }
+    CustomerReviewInput:
+      type: object
+      required: [orderId, productId, rating, qualityRating, colorMatches, metExpectations, valueRating, priceSatisfaction, packagingRating, deliveryRating, recommend, buyAgain, comments, reviewDate, variant]
+      properties:
+        orderId: { type: integer }
+        productId: { type: integer }
+        rating: { type: number, minimum: 1, maximum: 5 }
+        qualityRating: { type: number, minimum: 1, maximum: 5 }
+        colorMatches: { type: boolean }
+        metExpectations: { type: boolean }
+        valueRating: { type: number, minimum: 1, maximum: 5 }
+        priceSatisfaction: { type: number, minimum: 1, maximum: 5 }
+        packagingRating: { type: number, minimum: 1, maximum: 5 }
+        deliveryRating: { type: number, minimum: 1, maximum: 5 }
+        recommend: { type: boolean }
+        buyAgain: { type: boolean }
+        comments: { type: string }
+        reviewDate: { type: string, format: date }
+        variant: { type: string }
+        location: { type: [string, "null"] }
+    Expense:
+      type: object
+      required: [id, productId, campaignId, category, amount, expenseDate, notes, isSample, createdAt]
+      properties:
+        id: { type: integer }
+        productId: { type: [integer, "null"] }
+        campaignId: { type: [integer, "null"] }
+        category: { type: string }
+        amount: { type: number }
+        expenseDate: { type: string, format: date }
+        notes: { type: string }
+        isSample: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    ExpenseInput:
+      type: object
+      required: [category, amount, expenseDate, notes]
+      properties:
+        productId: { type: [integer, "null"] }
+        campaignId: { type: [integer, "null"] }
+        category: { type: string, enum: [promoter, advertising, packaging, shipping, platform_fee, other] }
+        amount: { type: number, minimum: 0 }
+        expenseDate: { type: string, format: date }
+        notes: { type: string }
+    ExpenseUpdate:
+      type: object
+      properties:
+        productId: { type: [integer, "null"] }
+        campaignId: { type: [integer, "null"] }
+        category: { type: string, enum: [promoter, advertising, packaging, shipping, platform_fee, other] }
+        amount: { type: number, minimum: 0 }
+        expenseDate: { type: string, format: date }
+        notes: { type: string }
+    Notification:
+      type: object
+      required: [id, title, message, severity, createdAt, isSample]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        message: { type: string }
+        severity: { type: string, enum: [info, warning, critical, success] }
+        createdAt: { type: string, format: date-time }
+        isSample: { type: boolean }
+    DashboardSummary:
+      type: object
+      required: [currency, productCount, promoterCount, shortlistedCount, activeCampaignCount, videosSubmitted, videosPublished, audienceReach, interestedCustomers, linkClicks, orderCount, deliveredOrders, unitsSold, satisfaction, productDemand, totalRevenue, totalExpenses, netProfit, averageCampaignRoi, monthlySales, campaignPerformance, recentActivity, isSampleWorkspace]
+      properties:
+        currency: { type: string }
+        productCount: { type: integer }
+        promoterCount: { type: integer }
+        shortlistedCount: { type: integer }
+        activeCampaignCount: { type: integer }
+        videosSubmitted: { type: integer }
+        videosPublished: { type: integer }
+        audienceReach: { type: integer }
+        interestedCustomers: { type: integer }
+        linkClicks: { type: integer }
+        orderCount: { type: integer }
+        deliveredOrders: { type: integer }
+        unitsSold: { type: integer }
+        satisfaction: { type: [number, "null"] }
+        productDemand: { type: integer }
+        totalRevenue: { type: number }
+        totalExpenses: { type: number }
+        netProfit: { type: number }
+        averageCampaignRoi: { type: [number, "null"] }
+        monthlySales:
+          type: array
+          items: { $ref: "#/components/schemas/MonthlySales" }
+        campaignPerformance:
+          type: array
+          items: { $ref: "#/components/schemas/CampaignPerformance" }
+        recentActivity:
+          type: array
+          items: { $ref: "#/components/schemas/ActivityItem" }
+        isSampleWorkspace: { type: boolean }
+    MonthlySales:
+      type: object
+      required: [month, revenue, expenses]
+      properties:
+        month: { type: string }
+        revenue: { type: number }
+        expenses: { type: number }
+    CampaignPerformance:
+      type: object
+      required: [campaignId, campaignName, promoterName, clicks, orders, reach, investment]
+      properties:
+        campaignId: { type: integer }
+        campaignName: { type: string }
+        promoterName: { type: string }
+        clicks: { type: integer }
+        orders: { type: integer }
+        reach: { type: integer }
+        investment: { type: number }
+    ActivityItem:
+      type: object
+      required: [id, title, detail, occurredAt]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        detail: { type: string }
+        occurredAt: { type: string, format: date-time }
+    DemandAnalytics:
+      type: object
+      required: [highInterestLowPurchase, lowStockProducts, productDemand, locationDemand, variantDemand, recommendations, isEstimate]
+      properties:
+        highInterestLowPurchase: { type: array, items: { type: string } }
+        lowStockProducts: { type: array, items: { type: string } }
+        productDemand: { type: array, items: { $ref: "#/components/schemas/NamedMetric" } }
+        locationDemand: { type: array, items: { $ref: "#/components/schemas/NamedMetric" } }
+        variantDemand: { type: array, items: { $ref: "#/components/schemas/NamedMetric" } }
+        recommendations: { type: array, items: { type: string } }
+        isEstimate: { type: boolean }
+    NamedMetric:
+      type: object
+      required: [name, interest, orders, units, revenue]
+      properties:
+        name: { type: string }
+        interest: { type: integer }
+        orders: { type: integer }
+        units: { type: integer }
+        revenue: { type: number }
+    LocationAnalytics:
+      type: object
+      required: [locations]
+      properties:
+        locations:
+          type: array
+          items: { $ref: "#/components/schemas/LocationMetric" }
+    LocationMetric:
+      type: object
+      required: [state, district, city, pinCode, orders, units, revenue, delivered, pending, failed, cancelled, returned, interested]
+      properties:
+        state: { type: string }
+        district: { type: string }
+        city: { type: string }
+        pinCode: { type: string }
+        orders: { type: integer }
+        units: { type: integer }
+        revenue: { type: number }
+        delivered: { type: integer }
+        pending: { type: integer }
+        failed: { type: integer }
+        cancelled: { type: integer }
+        returned: { type: integer }
+        interested: { type: integer }
+    FinancialAnalytics:
+      type: object
+      required: [currency, unitsOrdered, unitsSold, unitsDelivered, cancelledUnits, returnedUnits, grossOrderValue, totalRevenue, netSales, refunds, collectedPayments, productCost, promoterCost, otherCosts, totalExpenses, netProfit, profitMargin, averageOrderValue, averageCampaignRoi, byProduct, byPromoter, byCampaign, byLocation, formulas]
+      properties:
+        currency: { type: string }
+        unitsOrdered: { type: integer }
+        unitsSold: { type: integer }
+        unitsDelivered: { type: integer }
+        cancelledUnits: { type: integer }
+        returnedUnits: { type: integer }
+        grossOrderValue: { type: number }
+        totalRevenue: { type: number }
+        netSales: { type: number }
+        refunds: { type: number }
+        collectedPayments: { type: number }
+        productCost: { type: number }
+        promoterCost: { type: number }
+        otherCosts: { type: number }
+        totalExpenses: { type: number }
+        netProfit: { type: number }
+        profitMargin: { type: [number, "null"] }
+        averageOrderValue: { type: [number, "null"] }
+        averageCampaignRoi: { type: [number, "null"] }
+        byProduct: { type: array, items: { $ref: "#/components/schemas/NamedFinancialMetric" } }
+        byPromoter: { type: array, items: { $ref: "#/components/schemas/NamedFinancialMetric" } }
+        byCampaign: { type: array, items: { $ref: "#/components/schemas/NamedFinancialMetric" } }
+        byLocation: { type: array, items: { $ref: "#/components/schemas/NamedFinancialMetric" } }
+        formulas: { type: array, items: { type: string } }
+    NamedFinancialMetric:
+      type: object
+      required: [name, revenue, expenses, profit, roi]
+      properties:
+        name: { type: string }
+        revenue: { type: number }
+        expenses: { type: number }
+        profit: { type: number }
+        roi: { type: [number, "null"] }
+    InsightInput:
+      type: object
+      required: [question]
+      properties:
+        question: { type: string, minLength: 1, maxLength: 2000 }
+    InsightResponse:
+      type: object
+      required: [answer, source, generatedAt, limitations]
+      properties:
+        answer: { type: string }
+        source: { type: string, enum: [openai, rules] }
+        generatedAt: { type: string, format: date-time }
+        limitations: { type: array, items: { type: string } }
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name: { type: string, minLength: 1 }
+        size: { type: integer, minimum: 1 }
+        contentType: { type: string, minLength: 1 }
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL: { type: string, format: uri }
+        objectPath: { type: string }
+        metadata: { $ref: "#/components/schemas/UploadUrlRequest" }

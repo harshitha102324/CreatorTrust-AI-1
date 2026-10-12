@@ -1,0 +1,1 @@
+- [Generated client DOM types](generated-client-dom-types.md) — retain DOM.Iterable for Orval hooks that use `Headers.entries()`.
