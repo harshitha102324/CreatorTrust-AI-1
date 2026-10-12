@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "CreatorTrust AI"
+description = "An end-to-end creator promotion and business performance workspace for managing products, promoter discovery, campaigns, content approvals, orders, delivery, customer feedback, demand, and profit."
+version = "1.0.0"
+id = "artifacts/creatortrust-ai"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24860
+
+[services.development]
+run = "pnpm --filter @workspace/creatortrust-ai run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/creatortrust-ai", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/creatortrust-ai/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24860"
+BASE_PATH = "/"

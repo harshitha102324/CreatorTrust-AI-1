@@ -1,0 +1,647 @@
+PROJECT TITLE
+
+CreatorTrust AI — AI-Powered Promoter Discovery, Product Promotion, Customer Insights & Sales Analytics Platform
+
+Tagline: Discover. Promote. Track. Deliver. Analyse. Grow.
+
+MAIN INSTRUCTION
+
+Build a complete, functional, modern web application called CreatorTrust AI.
+
+This platform helps a business owner promote a product through suitable social media promoters/influencers and monitor the entire business process, starting from promoter selection and ending with customer satisfaction, product demand, total sales, revenue, expenses, and profit.
+
+IMPORTANT:
+
+- Build a working application, not just a landing page or static design.
+- Implement all the modules below and connect them into one continuous workflow.
+- Do not skip any feature.
+- If a project already exists, inspect it first and preserve existing working features, especially promoter comparison and agreement/PDF functionality.
+- Use a database for persistent records.
+- Provide sample data for demonstration, clearly labelled as sample data.
+- Do not show fake sample values as real business results.
+- Make the application suitable for a college project jury demonstration.
+
+1. HOME DASHBOARD
+
+Create a professional dashboard showing:
+
+- Total products.
+- Total promoters.
+- Promoters shortlisted.
+- Active promotions.
+- Videos submitted.
+- Videos published.
+- Total audience reached.
+- Interested customers and link clicks.
+- Total orders.
+- Orders delivered.
+- Units sold.
+- Customer satisfaction.
+- Product demand.
+- Total revenue.
+- Total expenses.
+- Net profit.
+- Average campaign ROI.
+
+Add charts, tables, date filters, location filters, campaign filters, and product filters.
+
+All dashboard values must update automatically when records are added or modified.
+
+2. PRODUCT REGISTRATION
+
+First, allow the business owner to register a product before searching for promoters.
+
+Product details must include:
+
+- Product name.
+- Product image.
+- Product category.
+- Product description.
+- Selling price.
+- Purchase or manufacturing cost per unit.
+- Available stock.
+- Target selling quantity.
+- Product quality details.
+- Available colours and sizes, if applicable.
+- Product purchase or ordering link.
+- Target audience.
+- Target locations or cities.
+- Promotion budget.
+- Expected profit per unit.
+- Product launch date.
+
+Allow users to add, edit, view, and delete products.
+
+The registered product must be available for promoter matching, campaign creation, order tracking, customer feedback, and sales analytics.
+
+3. FIND THE MOST SUITABLE PROMOTER
+
+Create an AI-assisted promoter discovery module.
+
+The business owner should select a registered product and enter the target audience, budget, preferred location, social media platform, and campaign goals.
+
+Find or manage suitable promoters based on:
+
+- Promoter name and profile link.
+- Social media platform.
+- Content category.
+- Audience interests.
+- Audience location.
+- Follower count.
+- Engagement rate.
+- Average views, if verified data is available.
+- Previous promotional performance.
+- Available customer or brand reviews.
+- Promoter rating.
+- Promotion cost.
+- Estimated campaign reach, clearly marked as an estimate.
+- Previous campaign results.
+- Contact information.
+- Data source and verification status.
+
+Provide filters for category, budget, location, platform, engagement, and rating.
+
+The AI should rank promoters according to how well they match the product and explain why each promoter is recommended.
+
+For example:
+“This promoter is recommended because their content category matches the product, their available audience data matches the target location, and their quoted price fits the campaign budget.”
+
+Allow the business owner to shortlist promoters and compare them.
+
+Do not invent real promoters, reviews, followers, or engagement metrics. Use authorised integrations where available, or allow manual entry and clearly labelled sample records.
+
+4. PROMOTER REVIEWS AND COST COMPARISON
+
+For every promoter, provide a detailed profile containing:
+
+- Promotion price.
+- Cost per video.
+- Cost per post or story.
+- Available audience information.
+- Available engagement statistics.
+- Previous campaign performance.
+- Reviews and ratings.
+- Positive feedback.
+- Negative feedback.
+- Reliability and delivery history.
+- Quoted deliverables.
+- Estimated cost per view or engagement, when sufficient data exists.
+
+Create a side-by-side comparison of selected promoters.
+
+Show:
+
+- Which promoter is most suitable.
+- Which promoter is more affordable.
+- Which promoter has stronger verified engagement.
+- Which promoter has better available reviews.
+- Which promoter best matches the target audience.
+- What information is missing.
+
+Allow the user to select a promoter and record the agreed price.
+
+Preserve and implement promoter comparison and campaign agreement PDF upload, review, and comparison features if they already exist in the project.
+
+5. SELECT PROMOTER AND FIX THE AGREEMENT
+
+After comparing promoters, allow the business owner to choose one or more promoters.
+
+Create a campaign agreement record containing:
+
+- Product.
+- Selected promoter.
+- Agreed promotion price.
+- Number of videos or posts.
+- Required video content.
+- Product link to be included.
+- Campaign start date.
+- Submission deadline.
+- Publication deadline.
+- Payment status.
+- Revision terms.
+- Agreed deliverables.
+- Campaign terms.
+- Agreement PDF or document link.
+
+Allow the owner to upload an agreement PDF and compare different promoter agreements.
+
+Track the agreement status:
+Draft → Sent → Accepted → Active → Completed.
+
+Do not mark a promoter as officially agreed until the business owner records the agreement confirmation.
+
+6. TRACK THE PROMOTER'S VIDEO AND PROMOTION PROCESS
+
+After selecting a promoter, track exactly what the promoter does.
+
+Create a promotion workflow with these stages:
+
+1. Product sent to promoter, if applicable.
+2. Product received by promoter.
+3. Video or post preparation started.
+4. Video or post submitted.
+5. Business owner reviews the content.
+6. Content approved or revision requested.
+7. Final video or post published.
+8. Published video or post link recorded.
+9. Promotion performance monitored.
+10. Campaign completed.
+
+For each stage, store:
+
+- Current status.
+- Date and time.
+- Notes.
+- Evidence or uploaded files.
+- Video or post URL.
+- Reason for rejection or revision.
+- Approval details.
+- Deadline and overdue status.
+
+Show a clear timeline so the owner can verify whether the promoter completed the agreed process.
+
+Send in-app notifications or dashboard alerts for pending submissions, overdue videos, revisions, and missed deadlines.
+
+Never assume a promoter has published a video without a recorded link, verified integration, or business-owner confirmation.
+
+7. PRODUCT PROMOTION REACH AND CUSTOMER INTEREST
+
+After the promoter publishes the video or post, record and analyse its performance.
+
+Track these metrics when data is available:
+
+- Video views.
+- Unique reach.
+- Impressions.
+- Likes.
+- Comments.
+- Shares.
+- Saves.
+- Engagement rate.
+- Product-link clicks.
+- Customer enquiries.
+- Customers who expressed interest.
+- Add-to-cart events, if integrated.
+- Attributed orders.
+- Conversion rate.
+- Audience location.
+- Performance by city or region.
+- Date-wise performance.
+
+Create graphs showing how the promotion performs over time.
+
+Allow the owner to compare the performance of multiple promoters and campaigns.
+
+Separate these measurements clearly:
+
+- People reached.
+- Views.
+- Link clicks.
+- Interested customers.
+- Confirmed orders.
+- Delivered orders.
+
+Do not treat views, clicks, and interested customers as confirmed sales.
+
+Use authorised social media APIs where available. If direct integration is unavailable, provide manual entry, CSV import, and sample demo records. Clearly show the source and last-updated time for each metric.
+
+8. PRODUCT LINK AND CUSTOMER ORDER TRACKING
+
+Every promotion campaign must have a product link that the promoter can share.
+
+Provide:
+
+- Product purchase link.
+- Campaign-specific tracking link.
+- Promoter-specific tracking link.
+- Link-click tracking where technically supported.
+- Campaign and promoter attribution for orders.
+- A field to record where the order originated.
+
+If feasible, generate unique campaign tracking URLs or UTM-tagged links.
+
+When customers place orders, record:
+
+- Order ID.
+- Order date.
+- Product.
+- Product variant, colour, or size.
+- Quantity ordered.
+- Selling price per unit.
+- Discount.
+- Total order amount.
+- Customer identifier.
+- City, district, state, or PIN code.
+- Payment status.
+- Order source or campaign.
+- Promoter responsible, when known.
+- Order status.
+- Cancellation or return status.
+
+Create reports showing which promoter or campaign generated each recorded order.
+
+Do not claim that a click or order came from a particular promoter unless tracking information or verified records support that attribution.
+
+9. LOCATION-WISE ORDER AND DELIVERY TRACKING
+
+Show exactly which places are ordering the product and where orders are being delivered.
+
+Create a location analytics page displaying:
+
+- Orders by state.
+- Orders by district.
+- Orders by city.
+- Orders by PIN code, if collected.
+- Quantity sold by location.
+- Revenue by location.
+- Delivery success by location.
+- Pending deliveries.
+- Failed deliveries.
+- Cancelled orders.
+- Returned products.
+- Customer interest by location.
+- Product demand by location.
+
+Provide a map or geographical visualisation if suitable mapping tools are configured.
+
+For every order, track the delivery process:
+
+Order Placed → Confirmed → Packed → Shipped → Out for Delivery → Delivered.
+
+Also support:
+
+- Cancelled.
+- Delivery Failed.
+- Returned.
+
+Record the tracking number, courier name, dispatch date, delivery date, and delivery status when available.
+
+Provide manual status updates and CSV import. Use courier APIs only when authorised credentials are configured.
+
+Do not claim real-time courier tracking if no live courier integration exists.
+
+Protect customer addresses and personal details. Only display the minimum location information required for business analysis.
+
+10. CUSTOMER REVIEWS AFTER DELIVERY
+
+Once an order is delivered, allow the business owner to record or import the customer's review.
+
+Where a customer-facing review form is implemented, link the review to the relevant delivered order without exposing private customer information.
+
+Collect the following feedback:
+
+- Overall rating out of 5.
+- Product quality.
+- Whether the colour matches the photos or description.
+- Whether the product matches expectations.
+- Value for money.
+- Price satisfaction.
+- Packaging quality.
+- Delivery experience.
+- Customer satisfaction.
+- Would the customer recommend the product?
+- Would the customer buy again?
+- Written comments.
+- Review date.
+- Product variant, if applicable.
+- Location, if available.
+
+Show review distributions and trends.
+
+Create an AI-assisted customer review analysis module that identifies:
+
+- Common positive feedback.
+- Common complaints.
+- Quality issues.
+- Colour mismatch complaints.
+- Price-related complaints.
+- Delivery problems.
+- Frequently praised features.
+- Reasons for returns.
+- Product improvement suggestions.
+- Overall customer satisfaction.
+- Satisfaction by location.
+- Satisfaction by product variant.
+
+Display real review counts and average ratings calculated from stored reviews.
+
+Do not create fake reviews. Clearly label sample reviews used for the demonstration.
+
+11. PRODUCT DEMAND ANALYSIS
+
+Create a product demand analytics module.
+
+Analyse demand using:
+
+- Number of customers who expressed interest.
+- Product-link clicks.
+- Add-to-cart activity, if available.
+- Confirmed orders.
+- Quantity ordered.
+- Units sold.
+- Repeat purchases, if identifiable from legitimate records.
+- Product searches, if collected.
+- Sales trends by date.
+- Demand by city or region.
+- Demand by colour or size.
+- Stock availability.
+- Cancellation and return rates.
+- Customer ratings and reviews.
+
+Identify:
+
+- Most demanded products.
+- Fast-selling products.
+- Slow-moving products.
+- Most demanded locations.
+- Popular product variants.
+- Products receiving high interest but few purchases.
+- Products with high returns or low satisfaction.
+- Possible stock shortage risks.
+
+Generate recommendations such as:
+“Interest is high in this location, but confirmed purchases are low. Review the price, delivery options, or product page.”
+
+Make it clear that demand forecasts and recommendations are estimates based on available historical data, not guaranteed predictions.
+
+12. TOTAL SALES AND REVENUE CALCULATION
+
+Create a sales dashboard showing:
+
+- Total units ordered.
+- Total units sold.
+- Total units delivered.
+- Total cancelled units.
+- Total returned units.
+- Sales by product.
+- Sales by promoter.
+- Sales by campaign.
+- Sales by location.
+- Sales by date.
+- Average order value.
+- Revenue by product.
+- Revenue by promoter.
+- Revenue by campaign.
+- Revenue by location.
+
+Calculate sales using valid recorded orders and the correct order status.
+
+Clearly distinguish gross order value, net sales, refunds, and actual collected payments.
+
+Avoid counting cancelled orders as completed sales. Account for returns, refunds, discounts, and taxes consistently wherever those fields are recorded.
+
+Allow filtering by date range, product, promoter, campaign, and location.
+
+13. COSTS, EXPENSES, AND PROFIT
+
+This section is very important.
+
+Record all relevant costs, including:
+
+- Product purchase or manufacturing cost.
+- Promoter payment.
+- Advertising expenses.
+- Packaging costs.
+- Shipping and delivery expenses.
+- Discounts.
+- Platform or transaction fees.
+- Refunds and returns.
+- Other business expenses.
+
+Calculate the following automatically using documented formulas:
+
+Total Revenue = Sum of valid sales amounts.
+
+Net Sales = Sales amount after recorded discounts, cancellations, and applicable refunds, using a consistent accounting rule.
+
+Product Cost = Cost of units sold, based on recorded unit cost.
+
+Total Expenses = Product costs + promoter fees + advertising + packaging + shipping + platform fees + other recorded expenses, without double-counting.
+
+Net Profit = Net Sales − Total Expenses not already deducted from net sales.
+
+Profit Margin (%) = Net Profit ÷ Net Sales × 100, when net sales are greater than zero.
+
+Campaign ROI (%) = (Attributed Campaign Profit − Campaign Investment) ÷ Campaign Investment × 100, when campaign investment is greater than zero.
+
+Document exactly how campaign-attributed profit and investment are defined.
+
+Show:
+
+- Total revenue.
+- Total expenses.
+- Product cost.
+- Promoter cost.
+- Other costs.
+- Net profit or loss.
+- Profit margin.
+- ROI.
+- Profit by product.
+- Profit by promoter.
+- Profit by campaign.
+- Profit by location.
+
+Use correct calculations and avoid counting the same cost twice.
+
+Handle missing costs, zero revenue, refunds, and negative profit safely. Never display a guaranteed profit or fabricate financial results.
+
+14. AI BUSINESS INSIGHTS AND RECOMMENDATIONS
+
+Add an AI-powered business insights module.
+
+Allow the owner to ask questions such as:
+
+- Which promoter is best for this product?
+- Which promoter provides the best value for money?
+- Which promotion generated the most recorded orders?
+- How many customers were interested?
+- Which locations generated the most orders?
+- Where were the products delivered?
+- What do customers think about product quality?
+- Are customers satisfied with the colour and price?
+- What is the current demand?
+- How many units were sold?
+- What revenue did we receive?
+- What expenses did we incur?
+- What is our net profit?
+- Which products are most profitable?
+- Which promoter or campaign performed best?
+- What should we improve in the next campaign?
+
+Use a server-side AI API, such as Gemini, if configured in Replit Secrets.
+
+AI must analyse the actual database records supplied to it. If an API is unavailable, provide basic rule-based insights and explain the limitation.
+
+Never expose API keys in the frontend. Never allow AI to invent orders, reviews, locations, prices, or financial figures. Calculate financial results using application formulas, not AI-generated guesses.
+
+15. REPORTS AND EXPORTS
+
+Provide downloadable reports for:
+
+- Promoter discovery and comparison.
+- Promoter reviews and costs.
+- Campaign agreements.
+- Video submission and publication status.
+- Promotion reach and customer interest.
+- Product-link clicks.
+- Orders by promoter.
+- Orders by location.
+- Delivery status.
+- Customer reviews.
+- Product demand.
+- Total units sold.
+- Revenue and expenses.
+- Net profit and ROI.
+- Complete product campaign performance.
+
+Support CSV export and printable reports. Add PDF export where feasible.
+
+Allow reports to be filtered by product, promoter, campaign, date, and location.
+
+16. NOTIFICATIONS AND FOLLOW-UP
+
+Create dashboard notifications for:
+
+- Agreement awaiting confirmation.
+- Video submission overdue.
+- Video awaiting approval.
+- Promotion not yet published.
+- Missing promotional performance data.
+- High customer interest.
+- Low conversion from clicks to orders.
+- Pending delivery.
+- Delivery failure.
+- Negative customer feedback.
+- Low product stock.
+- Increasing product demand.
+- Campaign spending exceeding its budget.
+
+Notifications must be based on actual stored records and configured thresholds.
+
+17. DATABASE AND SECURITY
+
+Use a persistent database supported by the existing Replit project.
+
+Create appropriate data structures for:
+
+- Products.
+- Promoters.
+- Promoter reviews.
+- Campaigns.
+- Campaign agreements.
+- Video deliverables.
+- Promotion metrics.
+- Tracking links.
+- Customers or privacy-safe customer identifiers.
+- Orders.
+- Deliveries.
+- Customer reviews.
+- Inventory.
+- Expenses.
+- Notifications.
+- Reports.
+
+Implement validation, error handling, secure API calls, and appropriate access controls.
+
+Do not store passwords or sensitive customer details in plain text. Keep all secret API keys in Replit Secrets.
+
+Use sample data only for demonstrations and visibly label it as sample data.
+
+18. COMPLETE WORKFLOW
+
+The final application must connect all modules in this exact order:
+
+1. Register the product.
+2. Search for suitable promoters.
+3. Compare promoter reviews, performance, and costs.
+4. Select the promoter.
+5. Confirm the agreed price and campaign agreement.
+6. Track the promoter's video creation and submission.
+7. Approve the video or request changes.
+8. Record and verify the published video or post.
+9. Monitor promotion reach, views, clicks, and customer interest.
+10. Provide or record the product purchase link.
+11. Track product orders and identify the campaign source where verified.
+12. Monitor the locations where customers order.
+13. Track shipping and delivery.
+14. Collect customer reviews after delivery.
+15. Analyse quality, colour accuracy, value for money, and satisfaction.
+16. Analyse product demand by location, product, and variant.
+17. Calculate units sold, revenue, expenses, net profit, margin, and ROI.
+18. Compare promoters and campaigns.
+19. Generate insights, recommendations, and downloadable reports.
+
+All modules must share consistent data. Updating an order, delivery, campaign, or review must update the relevant dashboard and reports automatically.
+
+19. FINAL BUILD AND TESTING
+
+Use a modern, professional design with a sidebar containing:
+
+Dashboard
+Products
+Find Promoters
+Promoter Reviews & Comparison
+Campaigns & Agreements
+Video Tracking
+Promotion Analytics
+Product Links
+Orders
+Location & Delivery
+Customer Reviews
+Product Demand
+Sales & Profit
+AI Insights
+Reports
+Settings
+
+Implement the complete working application, not just a visual mock-up.
+
+Seed clearly labelled sample records so a jury can explore the complete workflow immediately.
+
+Test forms, navigation, database persistence, promoter comparisons, agreement uploads, campaign status changes, tracking records, order attribution, delivery updates, customer reviews, demand charts, financial calculations, and exports.
+
+If a live integration cannot be configured, implement a useful manual-entry or CSV-import alternative and clearly disclose the limitation.
+
+First inspect the existing Replit project, preserve its working features, and then implement the missing modules in stages. Fix errors and ensure the app runs successfully before finishing.
+
+The final result must allow a user to follow a product from promoter selection all the way through promotion, customer orders, delivery, reviews, demand analysis, sales, revenue, and final profit in one connected platform.
